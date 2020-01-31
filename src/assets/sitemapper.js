@@ -154,7 +154,18 @@ export default class Sitemapper {
           // Fail silently
           return resolve([]);
         } else if (data && data.urlset && data.urlset.url) {
-          const sites = data.urlset.url.map(site => site.loc && site.loc[0]);
+          const sites = data.urlset.url.map(site => {
+            let _site = site.loc && site.loc[0]
+            if (!_site) {
+              return false
+            }
+            let result = { url: _site }
+            let _lastmod = site.lastmod && site.lastmod[0]
+            if (_lastmod) {
+              result.lastmod = _lastmod
+            }
+            return result
+          });
 
           return resolve([].concat(sites));
         } else if (data && data.sitemapindex) {
